@@ -1,5 +1,5 @@
 const router = require('express').Router();
 
-// router.use('/login', require('./documento-facil/login'));
+router.use('/materias', require('../materias'));
 
 module.exports = router;
