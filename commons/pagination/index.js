@@ -8,7 +8,6 @@ exports.pagination = (pageNumber = 0, pageSize = 25, elements) => {
     const endGetData = pageNumber === 0 ? pageSize : initGetData + 25 - 1;
     const elementsInPage = elements.splice(initGetData, endGetData);
 
-
     return {
         content: elementsInPage,
         totalElements: totalElements,
