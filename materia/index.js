@@ -6,9 +6,9 @@ const model = db.model('materias', schema, 'materias');
 const ObjectId = require('mongodb').ObjectID;
 const { convertId } = require('../commons/convert-id');
 
-router.get('/', (request, response) => {
-    const pageNumber = request.body.pageNumber;
-    const pageSize = request.body.pageSize;
+router.post('/list', (request, response) => {
+    const pageNumber = request.query.page;
+    const pageSize = request.query.size;
 
     model.find({}).lean().exec(
         (_error, _response) => {
@@ -55,7 +55,7 @@ router.get('/:id', (request, response) => {
 
         if (_response) {
             response.setHeader('Content-Type', 'application/json');
-            response.json(convertId([_response]));
+            response.json(convertId([_response])[0]);
             return false;
         }
 
