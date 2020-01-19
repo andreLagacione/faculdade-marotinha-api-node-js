@@ -23,8 +23,8 @@ exports.pagination = (pageNumber = 0, pageSize = 25, elements) => {
         totalPages: totalPages || 1,
         last: isLastPage,
         first: isFirstPage,
-        size: pageSize,
-        number: pageNumber,
+        size: parseInt(pageSize),
+        number: parseInt(pageNumber),
         numberOfElements: pageSize || 25
     }
 }
