@@ -9,8 +9,18 @@ const { convertId } = require('../commons/convert-id');
 router.post('/list', (request, response) => {
     const pageNumber = request.query.page;
     const pageSize = request.query.size;
+    let order = null;
+    let orderBy = 'name';
+    let direction = 1;
 
-    model.find({}).lean().exec(
+
+    if (request.query.sort) {
+        order = request.query.sort.split(',');
+        orderBy = order[0];
+        direction = order[1].toLowerCase() === 'asc' ? 1 : -1;
+    }
+
+    model.find({}).sort([[orderBy, direction]]).lean().exec(
         (_error, _response) => {
             if (_error) {
                 response.json(_error);
