@@ -13,7 +13,7 @@ router.get('/', (request, response) => {
     model.find({}).lean().exec(
         (_error, _response) => {
             if (_error) {
-                return _error;
+                response.json(_error);
             }
 
             let _pagination = pagination(pageNumber, pageSize, _response)
@@ -31,7 +31,7 @@ router.post('/', (request, response) => {
 
     newMateria.save(_error => {
         if (_error) {
-            return _error;
+            response.json(_error);
         }
 
         response.json({
@@ -49,38 +49,33 @@ router.get('/:id', (request, response) => {
         "_id": new ObjectId(_id)
     }, (_error, _response) => {
             if (_error) {
-                return _error;
+                response.json(_error);
             }
 
             _response = convertId([_response]);
-            
             response.json(_response);
     })
 });
 
-// router.put('/', (request, response) => {
-//     console.log('vaca')
-    // const _id = request.body.id;
-    // console.log(_id);
-    // const oldElement = { _id: _id };
-    // const newValue = {
-    //     name: request.body.name
-    // };
+router.put('/', (request, response) => {
+    const _id = request.body.id;
+    const oldElement = { _id: _id };
+    const newValue = {
+        name: request.body.name
+    };
 
-    // model.updateOne(oldElement, newValue, (_error, _response) => {
-    //     if (_error) {
-    //         return _error;
-    //     }
+    model.updateOne(oldElement, newValue, (_error, _response) => {
+        if (_error) {
+            response.json({error: _error});
+        }
 
-    //     response.json({
-    //         httpStatus: 'OK',
-    //         httpStatusCode: 200,
-    //         message: 'Matéria alterada com sucesso!'
-    //     })
-    // });
-
-    // response.json({error: 'error'});
-// });
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Matéria alterada com sucesso!'
+        })
+    });
+});
 
 
 module.exports = router;
