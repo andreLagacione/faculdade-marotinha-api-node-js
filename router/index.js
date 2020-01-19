@@ -1,5 +1,5 @@
 const router = require('express').Router();
 
-router.use('/materias', require('../materias'));
+router.use('/materia', require('../materia'));
 
 module.exports = router;
