@@ -138,5 +138,20 @@ router.delete('/:id', (request, response) => {
     });
 });
 
+router.get('/combo-list', (request, response) => {
+    console.log(request, response);
+    model.find({}).lean().exec(
+        (_error, _response) => {
+            console.log(_error, _response);
+            if (_error) {
+                response.json(_error);
+                return false;
+            }
+
+            response.json(convertId(_response));
+        }
+    );
+});
+
 
 module.exports = router;
