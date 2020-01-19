@@ -24,10 +24,8 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
     res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: err
-    });
+    res.end('Cannot ' + req.method + ' ' + req.url);
+    next(err);
 });
 
 console.log('Application running in port ' + port);
