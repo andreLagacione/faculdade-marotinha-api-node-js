@@ -7,13 +7,14 @@ const ObjectId = require('mongodb').ObjectID;
 const { convertId } = require('../commons/convert-id');
 
 router.get('/', (request, response) => {
-	const pageNumber = request.body.pageNumber;
+    const pageNumber = request.body.pageNumber;
     const pageSize = request.body.pageSize;
 
     model.find({}).lean().exec(
         (_error, _response) => {
             if (_error) {
                 response.json(_error);
+                return false;
             }
 
             let _pagination = pagination(pageNumber, pageSize, _response)
@@ -32,6 +33,7 @@ router.post('/', (request, response) => {
     newMateria.save(_error => {
         if (_error) {
             response.json(_error);
+            return false;
         }
 
         response.json({
@@ -44,17 +46,25 @@ router.post('/', (request, response) => {
 
 router.get('/:id', (request, response) => {
     const _id = request.params.id;
-    
-    model.findOne({
-        '_id': new ObjectId(_id)
-    }, (_error, _response) => {
-            if (_error) {
-                response.json(_error);
-            }
 
-            _response = convertId([_response]);
-            response.json(_response);
-    })
+    model.findById(_id).lean().exec((_error, _response) => {
+        if (_error) {
+            response.json(_error);
+            return false;
+        }
+
+        if (_response) {
+            response.setHeader('Content-Type', 'application/json');
+            response.json(convertId([_response]));
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Matéria não encontrada!'
+        });
+    });
 });
 
 router.put('/', (request, response) => {
@@ -66,7 +76,18 @@ router.put('/', (request, response) => {
 
     model.updateOne(oldElement, newValue, (_error, _response) => {
         if (_error) {
-            response.json({error: _error});
+            response.json({ error: _error });
+            return false;
+        }
+
+        if (_response && _response.nModified === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Matéria não encontrada!'
+            });
+
+            return false;
         }
 
         response.json({
@@ -83,8 +104,20 @@ router.delete('/:id', (request, response) => {
     model.deleteOne({
         '_id': new ObjectId(_id)
     }, (_error, _response) => {
+
         if (_error) {
             response.json(_error);
+            return false;
+        }
+
+        if (_response && _response.deletedCount === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Matéria não encontrada!'
+            });
+
+            return false;
         }
 
         response.json({
