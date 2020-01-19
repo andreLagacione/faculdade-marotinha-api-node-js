@@ -46,7 +46,7 @@ router.get('/:id', (request, response) => {
     const _id = request.params.id;
     
     model.findOne({
-        "_id": new ObjectId(_id)
+        '_id': new ObjectId(_id)
     }, (_error, _response) => {
             if (_error) {
                 response.json(_error);
@@ -74,6 +74,24 @@ router.put('/', (request, response) => {
             httpStatusCode: 200,
             message: 'Matéria alterada com sucesso!'
         })
+    });
+});
+
+router.delete('/:id', (request, response) => {
+    const _id = request.params.id;
+
+    model.deleteOne({
+        '_id': new ObjectId(_id)
+    }, (_error, _response) => {
+        if (_error) {
+            response.json(_error);
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Matéria removida com sucesso!'
+        });
     });
 });
 
