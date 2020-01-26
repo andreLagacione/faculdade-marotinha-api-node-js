@@ -1,7 +1,7 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
 const { pagination } = require('../../commons/pagination');
-const model = db.model('materias', schema, 'materias');
+const model = db.model('materias', schema, 'materias', true);
 const ObjectId = require('mongodb').ObjectID;
 const { convertId } = require('../../commons/convert-id');
 
