@@ -19,9 +19,9 @@ module.exports = {
             direction = order[1].toLowerCase() === 'asc' ? 1 : -1;
         }
 
-        const devsList = await model.find({}).sort([[orderBy, direction]]).lean().exec();
+        const materiaList = await model.find({}).sort([[orderBy, direction]]).lean().exec();
 
-        let _pagination = pagination(pageNumber, pageSize, devsList)
+        let _pagination = pagination(pageNumber, pageSize, materiaList)
         _pagination.content = convertId(_pagination.content);
 
         response.json(_pagination);
