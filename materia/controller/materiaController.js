@@ -81,7 +81,7 @@ module.exports = {
             httpStatus: 'OK',
             httpStatusCode: 200,
             message: 'Matéria alterada com sucesso!'
-        })
+        });
     },
 
     async destroy(request, response) {
