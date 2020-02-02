@@ -2,8 +2,9 @@ const db = require('../../mongo-config');
 const schema = require('../schema');
 const { pagination } = require('../../commons/pagination');
 const model = db.model('professores', schema, 'professores', true);
+const materiaModel = db.model('materias');
 const ObjectId = require('mongodb').ObjectID;
-const { convertId } = require('../../commons/convert-id');
+const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const checkCpf = require('../../commons/cpf');
 
 module.exports = {
@@ -42,7 +43,7 @@ module.exports = {
             age: request.body.age,
             cpf: cpf,
             phone: request.body.phone,
-            materiasLecionadas: request.body.materias
+            materias: request.body.materias
         });
 
         const save = await newProfessor.save();
@@ -52,5 +53,35 @@ module.exports = {
             httpStatusCode: 200,
             message: 'Professor adicionado com sucesso!'
         });
-    }
+    },
+
+    async show(request, response) {
+        const _id = request.params.id;
+        const professor = await model.findById(_id).lean().exec();
+        let materiasList;
+
+        if (professor) {
+            const idMaterias = professor.materias;
+
+            if (idMaterias.length) {
+                const objectIdArray = structureArrayOfObjectId(idMaterias);
+                materiasList = await materiaModel.find({
+                    _id: {
+                        $in: objectIdArray
+                    }
+                }).lean().exec();
+            }
+
+            professor.materias = convertId(materiasList);
+            response.setHeader('Content-Type', 'application/json');
+            response.json(convertId([professor])[0]);
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Professor(a) não encontrado(a)!'
+        });
+    },
 };
