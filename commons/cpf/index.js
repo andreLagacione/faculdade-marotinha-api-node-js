@@ -1,4 +1,4 @@
-exports.cpfValidator = (cpf) => {
+const cpfValidator = (cpf) => {
     cpf = cpf.replace(/[^\d]+/g, '');
 
     if (!cpf) {
@@ -62,7 +62,33 @@ exports.cpfValidator = (cpf) => {
     return true;
 };
 
-exports.findCpf = async (cpf, model) => {
+const findCpf = async (cpf, model) => {
     const registers = await model.find({ cpf: cpf }).lean().exec();
     return registers.length;
 }
+
+const checkCpf = async (cpf, model) => {
+    const cpfValidation = await cpfValidator(cpf);
+
+    if (!cpfValidation) {
+        return {
+            httpStatus: 'Method Not Allowed',
+            httpStatusCode: 405,
+            message: 'O CPF informado não é válido!'
+        };
+    }
+
+    const verifyCpf = await findCpf(cpf, model);
+
+    if (verifyCpf) {
+        return {
+            httpStatus: 'Method Not Allowed',
+            httpStatusCode: 405,
+            message: 'Já existe um registro cadastrado com esse CPF. Por favor informe outro CPF!'
+        };
+    }
+
+    return false;
+}
+
+module.exports = checkCpf;
