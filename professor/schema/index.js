@@ -4,10 +4,10 @@ const professorSchema = new mongoose.Schema({
     name: String,
     age: Number,
     cpf: String,
-    phone: Number,
-    materiasLecionadas: Array,
-    boletins: Array,
-    turmas: Array
+    phone: String,
+    materiasLecionadas: Array
 }, {
     collection: 'professores'
 });
+
+module.exports = professorSchema;
