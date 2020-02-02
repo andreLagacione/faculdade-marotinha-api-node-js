@@ -31,7 +31,7 @@ const cpfValidator = (cpf) => {
         const dig = parseInt(cpf.substring(i - 1, i));
         sum = sum + dig * (11 - i);
     }
-    
+
     rest = (sum * 10) % 11;
 
     if (rest === 10 || rest == 11) {
@@ -67,7 +67,7 @@ const findCpf = async (cpf, model) => {
     return registers.length;
 }
 
-const checkCpf = async (cpf, model) => {
+exports.checkCpf = async (cpf, model, checkExistisRegister) => {
     const cpfValidation = await cpfValidator(cpf);
 
     if (!cpfValidation) {
@@ -78,17 +78,21 @@ const checkCpf = async (cpf, model) => {
         };
     }
 
-    const verifyCpf = await findCpf(cpf, model);
+    if (checkExistisRegister) {
+        const verifyCpf = await findCpf(cpf, model);
 
-    if (verifyCpf) {
-        return {
-            httpStatus: 'Method Not Allowed',
-            httpStatusCode: 405,
-            message: 'Já existe um registro cadastrado com esse CPF. Por favor informe outro CPF!'
-        };
+        if (verifyCpf) {
+            return {
+                httpStatus: 'Method Not Allowed',
+                httpStatusCode: 405,
+                message: 'Já existe um registro cadastrado com esse CPF. Por favor informe outro CPF!'
+            };
+        }
     }
 
     return false;
 }
 
-module.exports = checkCpf;
+exports.findRegisterByCpf = async (cpf, model) => {
+    return await model.find({ cpf: cpf }).lean().exec();
+}
