@@ -5,7 +5,7 @@ const professorSchema = new mongoose.Schema({
     age: Number,
     cpf: String,
     phone: String,
-    materiasLecionadas: Array
+    materias: Array
 }, {
     collection: 'professores'
 });
