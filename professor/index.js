@@ -5,5 +5,6 @@ router.post('/list', professorController.index);
 router.post('/', professorController.store);
 
 router.get('/:id', professorController.show);
+router.put('/', professorController.update);
 
 module.exports = router;
