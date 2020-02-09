@@ -42,5 +42,35 @@ module.exports = {
             httpStatusCode: 200,
             message: 'Curso adicionado com sucesso!'
         });
+    },
+
+    async show(request, response) {
+        const _id = request.params.id;
+        const curso = await model.findById(_id).lean().exec();
+        let materiasList;
+
+        if (curso) {
+            const idMaterias = curso.materias;
+
+            if (idMaterias.length) {
+                const objectIdArray = structureArrayOfObjectId(idMaterias);
+                materiasList = await materiaModel.find({
+                    _id: {
+                        $in: objectIdArray
+                    }
+                }).lean().exec();
+            }
+
+            curso.materias = convertId(materiasList);
+            response.setHeader('Content-Type', 'application/json');
+            response.json(convertId([curso])[0]);
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Curso não encontrado!'
+        });
     }
 }
