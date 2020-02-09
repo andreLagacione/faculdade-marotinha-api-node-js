@@ -6,6 +6,7 @@ const materiaModel = db.model('materias');
 const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
+const { validateIfHasSubjects } = require('../../commons/validators');
 
 module.exports = {
     async index(request, response) {
@@ -19,9 +20,15 @@ module.exports = {
     async store(request, response) {
         const cpf = request.body.cpf;
         const _checkCpf = await checkCpf(cpf, model, true);
+        const validateSubjects = validateIfHasSubjects(request.body.materias);
 
         if (_checkCpf) {
             response.status(_checkCpf.httpStatusCode).send(_checkCpf);
+            return false;
+        }
+
+        if (validateSubjects) {
+            response.status(validateSubjects.httpStatusCode).send(validateSubjects);
             return false;
         }
 
