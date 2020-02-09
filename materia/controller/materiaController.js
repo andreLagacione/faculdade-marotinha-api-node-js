@@ -16,7 +16,7 @@ module.exports = {
 
     async store(request, response) {
         const newMateria = new model({
-            name: request.body.name
+            name: request.body.name.trim()
         });
 
         const save = await newMateria.save();
@@ -49,7 +49,7 @@ module.exports = {
         const _id = request.body.id;
         const oldElement = { _id: _id };
         const newValue = {
-            name: request.body.name
+            name: request.body.name.trim()
         };
 
         const _response = await model.updateOne(oldElement, newValue);

@@ -18,7 +18,7 @@ module.exports = {
     },
 
     async store(request, response) {
-        const cpf = request.body.cpf;
+        const cpf = request.body.cpf.trim();
         const _checkCpf = await checkCpf(cpf, model, true);
         const validateSubjects = validateIfHasSubjects(request.body.materias);
 
@@ -33,10 +33,10 @@ module.exports = {
         }
 
         const newProfessor = new model({
-            name: request.body.name,
-            age: request.body.age,
+            name: request.body.name.trim(),
+            age: request.body.age.trim(),
             cpf: cpf,
-            phone: request.body.phone,
+            phone: request.body.phone.trim(),
             materias: request.body.materias
         });
 
@@ -80,7 +80,7 @@ module.exports = {
     },
 
     async update(request, response) {
-        const cpf = request.body.cpf;
+        const cpf = request.body.cpf.trim();
         let professorId = request.body.id;
         const findProfessor = await findRegisterByCpf(cpf, model);
         let idProfessorFound;
@@ -108,10 +108,10 @@ module.exports = {
             _id: professorId
         }, {
                 $set: {
-                    name: request.body.name,
-                    age: request.body.age,
+                    name: request.body.name.trim(),
+                    age: request.body.age.trim(),
                     cpf: cpf,
-                    phone: request.body.phone,
+                    phone: request.body.phone.trim(),
                     materias: request.body.materias
             }
         });
