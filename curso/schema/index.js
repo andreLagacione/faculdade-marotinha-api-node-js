@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const cursoSchema = new mongoose.Schema({
-    name: String,
+    nome: String,
     materias: Array
 }, {
     collection: 'cursos'
