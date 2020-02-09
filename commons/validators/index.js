@@ -1,8 +1,12 @@
-exports.validateIfCourseExist = async (courseName, model) => {
+exports.validateIfCourseExist = async (courseName, model, idEditRegister = false) => {
     const courses = await model.find({}).lean().exec();
 
     for (let item of courses) {
         if (item.name === courseName) {
+            if (idEditRegister && idEditRegister === item._id) {
+                return false;
+            }
+            
             return {
                 httpStatus: 'Method Not Allowed',
                 httpStatusCode: 405,
