@@ -28,3 +28,23 @@ exports.pagination = (pageNumber = 0, pageSize = 25, elements) => {
         numberOfElements: pageSize || 25
     }
 }
+
+exports.paginationParams = (request, orderBy = 'name', direction = 1) => {
+    const pageNumber = request.query.page;
+    const pageSize = request.query.size;
+    let order = null;
+
+    if (request.query.sort) {
+        order = request.query.sort.split(',');
+        orderBy = order[0];
+        direction = order[1].toLowerCase() === 'asc' ? 1 : -1;
+    }
+
+    return {
+        pageNumber,
+        pageSize,
+        orderBy,
+        direction
+    };
+
+}
