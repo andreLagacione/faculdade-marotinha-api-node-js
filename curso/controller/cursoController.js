@@ -74,3 +74,16 @@ module.exports = {
         });
     }
 }
+
+const cursoListDTO = (cursoList) => {
+    let listDTO = [];
+
+    cursoList.map(item => {
+        listDTO.push({
+            nome: item.nome,
+            id: item._id
+        });
+    });
+
+    return listDTO;
+}
