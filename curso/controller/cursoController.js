@@ -5,13 +5,42 @@ const model = db.model('cursos', schema, 'cursos', true);
 const materiaModel = db.model('materias');
 const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
+const { validateIfCourseExist, validateIfHasSubjects } = require('../../commons/validators');
 
 module.exports = {
     async index(request, response) {
         const _paginationParams = paginationParams(request);
         const cursoList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
         let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, cursoList)
-        _pagination.content = convertId(_pagination.content);
+        _pagination.content = cursoListDTO(_pagination.content);
         response.json(_pagination);
     },
+
+    async store(request, response) {
+        const validateCourse = await validateIfCourseExist(request.body.name, model);
+        const validateSubjects = validateIfHasSubjects(request.body.materias);
+
+        if (validateCourse) {
+            response.status(validateCourse.httpStatusCode).send(validateCourse);
+            return false;
+        }
+
+        if (validateSubjects) {
+            response.status(validateSubjects.httpStatusCode).send(validateSubjects);
+            return false;
+        }
+
+        const newCurso = new model({
+            nome: request.body.name.trim(),
+            materias: request.body.materias
+        });
+
+        const save = await newCurso.save();
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Curso adicionado com sucesso!'
+        });
+    }
 }
