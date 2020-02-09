@@ -14,7 +14,7 @@ exports.validateIfCourseExist = async (courseName, model) => {
     return false;
 }
 
-exports.validateIfHasSubjects = async (subjectsList) => {
+exports.validateIfHasSubjects = (subjectsList) => {
     if (!subjectsList.length) {
         return {
             httpStatus: 'Method Not Allowed',
