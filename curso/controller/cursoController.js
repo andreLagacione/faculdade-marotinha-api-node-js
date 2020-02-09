@@ -72,7 +72,48 @@ module.exports = {
             httpStatusCode: 404,
             message: 'Curso não encontrado!'
         });
-    }
+    },
+
+    async update(request, response) {
+        let cursoId = request.body.id;
+        const validateCourse = await validateIfCourseExist(request.body.name, model, cursoId);
+        const validateSubjects = validateIfHasSubjects(request.body.materias);
+
+        if (validateCourse) {
+            response.status(validateCourse.httpStatusCode).send(validateCourse);
+            return false;
+        }
+
+        if (validateSubjects) {
+            response.status(validateSubjects.httpStatusCode).send(validateSubjects);
+            return false;
+        }
+
+        const _response = await model.updateOne({
+            _id: cursoId
+        }, {
+                $set: {
+                    nome: request.body.name.trim(),
+                    materias: request.body.materias
+            }
+        });
+
+        if (_response && _response.nModified === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Curso não encontrado!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Curso alterado com sucesso!'
+        });
+    },
 }
 
 const cursoListDTO = (cursoList) => {
