@@ -13,7 +13,7 @@ module.exports = {
         const _paginationParams = paginationParams(request);
         const professorList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
         let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, professorList)
-        _pagination.content = convertId(_pagination.content);
+        _pagination.content = professorListDTO(_pagination.content);
         response.json(_pagination);
     },
 
@@ -157,3 +157,19 @@ module.exports = {
         });
     }
 };
+
+const professorListDTO = (professorList) => {
+    let listDTO = [];
+
+    professorList.map(item => {
+        listDTO.push({
+            name: item.name,
+            age: item.age,
+            cpf: item.cpf,
+            phone: item.phone,
+            id: item._id
+        });
+    });
+
+    return listDTO;
+}
