@@ -1,7 +1,6 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
 const model = db.model('professores', schema, 'professores');
-const { convertId } = require('../../commons/convert-id');
 
 module.exports = {
     async index(request, response) {
