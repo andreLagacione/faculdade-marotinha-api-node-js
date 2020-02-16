@@ -78,6 +78,60 @@ module.exports = {
             message: 'Aluno(a) não encontrado(a)!'
         });
     },
+
+    async update(request, response) {
+        const cpf = request.body.cpf.trim();
+        let alunoId = request.body.id;
+        const findAluno = await findRegisterByCpf(cpf, model);
+        let idAlunoFound;
+
+        if (findAluno.length) {
+            idAlunoFound = findAluno[0]._id.toString();
+        }
+
+        if (idAlunoFound !== alunoId) {
+            response.status(405).send({
+                httpStatus: 'Method Not Allowed',
+                httpStatusCode: 405,
+                message: 'Já existe um registro cadastrado com esse CPF. Por favor informe outro CPF!'
+            });
+        }
+
+        const _checkCpf = await checkCpf(cpf, model, false);
+
+        if (_checkCpf) {
+            response.status(_checkCpf.httpStatusCode).send(_checkCpf);
+            return false;
+        }
+
+        const _response = await model.updateOne({
+            _id: alunoId
+        }, {
+            $set: {
+                name: request.body.name.trim(),
+                age: request.body.age,
+                cpf: cpf,
+                phone: request.body.phone.trim(),
+                turmas: request.body.turmas
+            }
+        });
+
+        if (_response && _response.n === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Professor(a) não encontrado(a)!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Professor(a) alterado(a) com sucesso!'
+        });
+    },
 };
 
 const alunoListDTO = (alunoList) => {
