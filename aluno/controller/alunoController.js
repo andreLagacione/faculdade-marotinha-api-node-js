@@ -132,6 +132,30 @@ module.exports = {
             message: 'Professor(a) alterado(a) com sucesso!'
         });
     },
+
+    async destroy(request, response) {
+        const _id = request.params.id;
+
+        const _response = await model.deleteOne({
+            '_id': new ObjectId(_id)
+        });
+
+        if (_response && _response.deletedCount === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Aluno(a) não encontrado(a)!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Aluno(a) removido(a) com sucesso!'
+        });
+    }
 };
 
 const alunoListDTO = (alunoList) => {
