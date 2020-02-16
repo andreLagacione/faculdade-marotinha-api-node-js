@@ -45,7 +45,7 @@ module.exports = {
         response.json({
             httpStatus: 'OK',
             httpStatusCode: 200,
-            message: 'Professor adicionado com sucesso!'
+            message: 'Professor(a) adicionado(a) com sucesso!'
         });
     },
 
