@@ -84,7 +84,7 @@ module.exports = {
         let professorId = request.body.id;
         const findProfessor = await findRegisterByCpf(cpf, model);
         let idProfessorFound;
-        
+
         if (findProfessor.length) {
             idProfessorFound = findProfessor[0]._id.toString();
         }
@@ -107,16 +107,16 @@ module.exports = {
         const _response = await model.updateOne({
             _id: professorId
         }, {
-                $set: {
-                    name: request.body.name.trim(),
-                    age: request.body.age.trim(),
-                    cpf: cpf,
-                    phone: request.body.phone.trim(),
-                    materias: request.body.materias
+            $set: {
+                name: request.body.name.trim(),
+                age: request.body.age.trim(),
+                cpf: cpf,
+                phone: request.body.phone.trim(),
+                materias: request.body.materias
             }
         });
 
-        if (_response && _response.nModified === 0) {
+        if (_response && _response.n === 0) {
             response.status(404).send({
                 httpStatus: 'Not Found',
                 httpStatusCode: 404,

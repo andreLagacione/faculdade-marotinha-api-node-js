@@ -98,7 +98,7 @@ module.exports = {
             }
         });
 
-        if (_response && _response.nModified === 0) {
+        if (_response && _response.n === 0) {
             response.status(404).send({
                 httpStatus: 'Not Found',
                 httpStatusCode: 404,
