@@ -6,5 +6,6 @@ router.post('', turmaController.store);
 
 router.get('/:id', turmaController.show);
 router.put('/', turmaController.update);
+router.delete('/:id', turmaController.destroy);
 
 module.exports = router;
