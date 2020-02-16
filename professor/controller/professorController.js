@@ -34,7 +34,7 @@ module.exports = {
 
         const newProfessor = new model({
             name: request.body.name.trim(),
-            age: request.body.age.trim(),
+            age: request.body.age,
             cpf: cpf,
             phone: request.body.phone.trim(),
             materias: request.body.materias
@@ -109,7 +109,7 @@ module.exports = {
         }, {
             $set: {
                 name: request.body.name.trim(),
-                age: request.body.age.trim(),
+                age: request.body.age,
                 cpf: cpf,
                 phone: request.body.phone.trim(),
                 materias: request.body.materias
