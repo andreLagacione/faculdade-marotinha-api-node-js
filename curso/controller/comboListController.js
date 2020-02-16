@@ -9,7 +9,7 @@ module.exports = {
 
         cursos.map(item => {
             comboList.push({
-                nome: item.nome,
+                nome: item.name,
                 id: item._id
             });
         });

@@ -2,7 +2,7 @@ exports.validateIfCourseExist = async (courseName, model, idEditRegister = false
     const courses = await model.find({}).lean().exec();
 
     for (let item of courses) {
-        if (item.nome === courseName) {
+        if (item.name === courseName) {
             if (idEditRegister && idEditRegister == item._id) {
                 return false;
             }

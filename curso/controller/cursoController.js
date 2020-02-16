@@ -31,7 +31,7 @@ module.exports = {
         }
 
         const newCurso = new model({
-            nome: request.body.name.trim(),
+            name: request.body.name.trim(),
             materias: request.body.materias
         });
 
@@ -93,7 +93,7 @@ module.exports = {
             _id: cursoId
         }, {
                 $set: {
-                    nome: request.body.name.trim(),
+                    name: request.body.name.trim(),
                     materias: request.body.materias
             }
         });
@@ -145,7 +145,7 @@ const cursoListDTO = (cursoList) => {
 
     cursoList.map(item => {
         listDTO.push({
-            nome: item.nome,
+            nome: item.name,
             id: item._id
         });
     });
