@@ -5,5 +5,6 @@ router.post('/list', turmaController.index);
 router.post('', turmaController.store);
 
 router.get('/:id', turmaController.show);
+router.put('/', turmaController.update);
 
 module.exports = router;
