@@ -5,9 +5,6 @@ const model = db.model('turmas', schema, 'turmas', true);
 const professorModel = db.model('professores');
 const cursoModel = db.model('cursos');
 const ObjectId = require('mongodb').ObjectID;
-const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
-const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
-const { validateIfHasSubjects } = require('../../commons/validators');
 
 module.exports = {
     async index(request, response) {
