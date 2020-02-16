@@ -18,12 +18,12 @@ exports.validateIfCourseExist = async (courseName, model, idEditRegister = false
     return false;
 }
 
-exports.validateIfHasSubjects = (subjectsList) => {
+exports.validateIfHasSubjects = (subjectsList, item = 'matéria') => {
     if (!subjectsList.length) {
         return {
             httpStatus: 'Method Not Allowed',
             httpStatusCode: 405,
-            message: 'Informe pelo menos uma matéria!'
+            message: `Informe pelo menos uma ${item}!`
         };
     }
 
