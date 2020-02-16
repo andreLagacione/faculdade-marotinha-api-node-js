@@ -51,6 +51,35 @@ module.exports = {
             message: 'Turma adicionado com sucesso!'
         });
     },
+
+    async show(request, response) {
+        const _id = request.params.id;
+        const turma = await model.findById(_id).lean().exec();
+
+        if (turma) {
+            const buildTurma = {
+                id: turma._id,
+                ano: turma.ano,
+                curso: {
+                    id: turma.curso
+                },
+                professor: {
+                    id: turma.professor
+                },
+                periodo: turma.periodo,
+            }
+
+            response.setHeader('Content-Type', 'application/json');
+            response.json(buildTurma);
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Turma não encontrada!'
+        });
+    },
 }
 
 const turmaListDTO = professorList => {
@@ -58,6 +87,7 @@ const turmaListDTO = professorList => {
 
     professorList.map(item => {
         listDTO.push({
+            id: item._id,
             ano: item.ano,
             curso: item.cursoName,
             professor: item.professorName,
