@@ -35,12 +35,12 @@ module.exports = {
         const professorName = await getRegisterById(professorModel, request.body.professor, 'name');
 
         const newCurso = new model({
-            ano: request.body.ano,
-            curso: request.body.curso,
-            cursoName: cursoName,
-            professor: request.body.professor,
-            professorName: professorName,
-            periodo: request.body.periodo
+            ano: request.body.ano.trim(),
+            curso: request.body.curso.trim(),
+            cursoName: cursoName.trim(),
+            professor: request.body.professor.trim(),
+            professorName: professorName.trim(),
+            periodo: request.body.periodo.trim()
         });
 
         const save = await newCurso.save();
@@ -80,6 +80,53 @@ module.exports = {
             message: 'Turma não encontrada!'
         });
     },
+
+    async update(request, response) {
+        const turmaId = request.body.id;
+        const canCreate = await turmaValidate(request.body);
+
+        if (!canCreate) {
+            response.status(405).send({
+                httpStatus: 'Method Not Allowed',
+                httpStatusCode: 405,
+                message: 'Já existe uma turma cadastrada para este ano, com esta matéria, com o mesmo porfessor e no mesmo periódo. Por favor informe outros dados!'
+            });
+
+            return false;
+        }
+
+        const cursoName = await getRegisterById(cursoModel, request.body.curso, 'name');
+        const professorName = await getRegisterById(professorModel, request.body.professor, 'name');
+
+        const _response = await model.updateOne({
+            _id: turmaId
+        }, {
+            $set: {
+                ano: request.body.ano.trim(),
+                curso: request.body.curso.trim(),
+                cursoName: cursoName.trim(),
+                professor: request.body.professor.trim(),
+                professorName: professorName.trim(),
+                periodo: request.body.periodo.trim()
+            }
+        });
+
+        if (_response && _response.n === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Turma não encontrada!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Turma alterada com sucesso!'
+        });
+    },
 }
 
 const turmaListDTO = professorList => {
@@ -116,7 +163,7 @@ const turmaValidate = async (bodyRequest) => {
         return true;
     }
 
-    if (bodyRequest.id === item[0]._id) {
+    if (bodyRequest.id == item[0]._id) {
         return true;
     }
 
