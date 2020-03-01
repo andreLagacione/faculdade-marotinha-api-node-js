@@ -3,7 +3,7 @@ const boletimController = require('./controller/boletimController');
 // const comboListController = require('./controller/comboListController');
 
 router.post('/list', boletimController.index);
-// router.post('/', boletimController.store);
+router.post('/', boletimController.store);
 // router.get('/combo-list', comboListController.index);
 // router.get('/:id', boletimController.show);
 // router.put('/', boletimController.update);
