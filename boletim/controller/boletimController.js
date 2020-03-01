@@ -25,8 +25,7 @@ module.exports = {
                 ano: ano,
                 professor: idProfessor,
                 aluno: idAluno,
-                turma: idTurma,
-                notas: []
+                turma: idTurma
             });
 
             await newBoletim.save();
@@ -67,6 +66,50 @@ module.exports = {
             httpStatus: 'Not Found',
             httpStatusCode: 404,
             message: 'Boletim não encontrado!'
+        });
+    },
+
+    async update(request, response) {
+        const { ano, idProfessor, idAluno, idTurma, id } = request.body;
+        const canSave = await findBoletim(request);
+
+        if (canSave.length) {
+            if (id !== canSave[0]._id) {
+                response.status(405).send({
+                    httpStatus: 'Method Not Allowed',
+                    httpStatusCode: 405,
+                    message: 'Já existe um registro cadastrado com esses Dados!'
+                });
+
+                return false;
+            }
+        }
+
+        const _response = await model.updateOne({
+            _id: id
+        }, {
+            $set: {
+                ano: ano,
+                professor: idProfessor,
+                aluno: idAluno,
+                turma: idTurma
+            }
+        });
+
+        if (_response && _response.n === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Boletim não encontrado!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Boletim alterado com sucesso!'
         });
     },
 
