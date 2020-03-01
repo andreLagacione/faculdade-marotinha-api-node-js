@@ -3,7 +3,7 @@ const notaController = require('./controller/notaController');
 // const comboListController = require('./controller/comboListController');
 
 // router.post('/list', notaController.index);
-// router.post('/', notaController.store);
+router.post('/', notaController.store);
 // router.get('/combo-list', comboListController.index);
 router.get('/id-boletim/:id', notaController.index);
 // router.put('/', notaController.update);
