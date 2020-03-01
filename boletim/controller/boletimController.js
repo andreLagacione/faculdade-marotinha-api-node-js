@@ -2,13 +2,10 @@ const db = require('../../mongo-config');
 const schema = require('../schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('boletim', schema, 'boletim', true);
-const materiaModel = db.model('materias');
 const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
-const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
-const { validateIfHasSubjects } = require('../../commons/validators');
-
 const { getById } = require('../../commons/getData');
+const { validateIfHasSubjects } = require('../../commons/validators');
 
 module.exports = {
     async index(request, response) {
@@ -20,23 +17,42 @@ module.exports = {
     },
 
     async store(request, response) {
-        const body = request.body;
+        const { ano, idProfessor, idAluno, idTurma } = request.body;
 
-        const newBoletim = new model({
-            ano: body.ano,
-            professor: body.idProfessor,
-            aluno: body.idAluno,
-            turma: body.idTurma,
-            notas: []
+        const canSave = await model.find({
+            ano: ano,
+            professor: ObjectId(idProfessor),
+            aluno: ObjectId(idAluno),
+            turma: ObjectId(idTurma)
+        }).lean().exec();
+
+        if (!canSave.length) {
+            const newBoletim = new model({
+                ano: ano,
+                professor: idProfessor,
+                aluno: idAluno,
+                turma: idTurma,
+                notas: []
+            });
+    
+            await newBoletim.save();
+    
+            response.json({
+                httpStatus: 'OK',
+                httpStatusCode: 200,
+                message: 'Boletim adicionado com sucesso!'
+            });
+
+            return false;
+        }
+
+        response.status(405).send({
+            httpStatus: 'Method Not Allowed',
+            httpStatusCode: 405,
+            message: 'Já existe um boletim cadastrado com essas informações!'
         });
 
-        const save = await newBoletim.save();
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Boletim adicionado com sucesso!'
-        });
+        
     },
 
 };
