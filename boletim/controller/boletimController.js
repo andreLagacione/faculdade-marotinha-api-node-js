@@ -18,13 +18,7 @@ module.exports = {
 
     async store(request, response) {
         const { ano, idProfessor, idAluno, idTurma } = request.body;
-
-        const canSave = await model.find({
-            ano: ano,
-            professor: ObjectId(idProfessor),
-            aluno: ObjectId(idAluno),
-            turma: ObjectId(idTurma)
-        }).lean().exec();
+        const canSave = await findBoletim(request);
 
         if (!canSave.length) {
             const newBoletim = new model({
@@ -34,9 +28,9 @@ module.exports = {
                 turma: idTurma,
                 notas: []
             });
-    
+
             await newBoletim.save();
-    
+
             response.json({
                 httpStatus: 'OK',
                 httpStatusCode: 200,
@@ -51,8 +45,29 @@ module.exports = {
             httpStatusCode: 405,
             message: 'Já existe um boletim cadastrado com essas informações!'
         });
+    },
 
-        
+    async show(request, response) {
+        const _id = request.params.id;
+        const boletim = await model.findById(_id).lean().exec();
+
+        if (boletim) {
+            response.setHeader('Content-Type', 'application/json');
+            response.json({
+                id: boletim._id,
+                ano: boletim.ano,
+                idProfessor: boletim.professor,
+                idAluno: boletim.aluno,
+                idTurma: boletim.turma,
+            });
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Boletim não encontrado!'
+        });
     },
 
 };
@@ -68,6 +83,7 @@ const boletimListDTO = async (professorList) => {
             const curso = await getById(`/curso/${turma.curso.id}`);
 
             boletimDTO.push({
+                id: item._id,
                 ano: item.ano,
                 nomeAluno: aluno.name,
                 nomeProfessor: professor.name,
@@ -79,4 +95,15 @@ const boletimListDTO = async (professorList) => {
 
     return boletimDTO;
 };
+
+const findBoletim = async (request) => {
+    const { ano, idProfessor, idAluno, idTurma } = request.body;
+
+    return await model.find({
+        ano: ano,
+        professor: ObjectId(idProfessor),
+        aluno: ObjectId(idAluno),
+        turma: ObjectId(idTurma)
+    }).lean().exec();
+}
 
