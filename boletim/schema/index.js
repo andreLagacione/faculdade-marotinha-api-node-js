@@ -14,8 +14,7 @@ const boletimSchema = new mongoose.Schema({
     turma: {
         type: Schema.Types.ObjectId,
         ref: 'Turmas'
-    },
-    notas: Array
+    }
 }, {
     collection: 'boletim'
 });
