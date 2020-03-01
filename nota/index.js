@@ -5,7 +5,7 @@ const notaController = require('./controller/notaController');
 // router.post('/list', notaController.index);
 // router.post('/', notaController.store);
 // router.get('/combo-list', comboListController.index);
-router.get('/:id', notaController.show);
+router.get('/:id', notaController.index);
 // router.put('/', notaController.update);
 // router.delete('/:id', notaController.destroy);
 module.exports = router;
