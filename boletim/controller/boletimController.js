@@ -3,9 +3,7 @@ const schema = require('../schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('boletim', schema, 'boletim', true);
 const ObjectId = require('mongodb').ObjectID;
-const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { getById } = require('../../commons/getData');
-const { validateIfHasSubjects } = require('../../commons/validators');
 
 module.exports = {
     async index(request, response) {
