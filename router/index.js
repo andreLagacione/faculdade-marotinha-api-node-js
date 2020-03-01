@@ -6,5 +6,6 @@ router.use('/curso', require('../curso'));
 router.use('/turma', require('../turma'));
 router.use('/aluno', require('../aluno'));
 router.use('/boletim', require('../boletim'));
+router.use('/nota/id-boletim', require('../nota'));
 
 module.exports = router;
