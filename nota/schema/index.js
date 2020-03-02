@@ -14,7 +14,7 @@ const notaSchema = new mongoose.Schema({
     notaBimestre2: Number,
     notaBimestre3: Number,
     notaBimestre4: Number,
-    mediaFinal: Number || String
+    mediaFinal: Number
 }, {
     collection: 'notas'
 });
