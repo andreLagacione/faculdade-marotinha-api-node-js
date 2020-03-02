@@ -11,7 +11,6 @@ const { getById } = require('../../commons/getData');
 
 module.exports = {
     async index(request, response) {
-        console.log(request.params.id);
         const notas = await model.find({ idBoletim: ObjectId(request.params.id) });
         response.json(await notasDTO(notas));
     },
@@ -21,10 +20,10 @@ module.exports = {
         const canAdd = await findNota(request);
 
         if (canAdd.length) {
-            response.json({
+            response.status(405).send({
                 httpStatus: 'Method Not Allowed',
                 httpStatusCode: 405,
-                message: 'Já existe um registro cadastrado com esses dados!'
+                message: 'Já existe(m) nota(s) cadastrada(s) para essa matéria neste boletim!'
             });
 
             return false;
@@ -76,7 +75,7 @@ const findNota = async (request) => {
     const { idMateria, idBoletim } = request.body;
 
     return await model.find({
-        idMateria: ObjectId(idMateria),
+        materia: ObjectId(idMateria),
         idBoletim: ObjectId(idBoletim)
     });
 }
