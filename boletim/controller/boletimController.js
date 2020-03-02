@@ -1,7 +1,9 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
+const notasSchema = require('../../nota/schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('boletim', schema, 'boletim', true);
+const notasModel = db.model('notas', notasSchema);
 const ObjectId = require('mongodb').ObjectID;
 const { getById } = require('../../commons/getData');
 
@@ -146,6 +148,10 @@ const boletimListDTO = async (professorList) => {
             const professor = await getById(`/professor/${item.professor}`);
             const turma = await getById(`/turma/${item.turma}`);
             const curso = await getById(`/curso/${turma.curso.id}`);
+            const canPrint = await findNotaByBoletimId(item._id)
+
+            console.log('vaca ', canPrint)
+
 
             boletimDTO.push({
                 id: item._id,
@@ -153,7 +159,7 @@ const boletimListDTO = async (professorList) => {
                 nomeAluno: aluno.name,
                 nomeProfessor: professor.name,
                 nomeTurma: `${curso.name} - período da ${turma.periodo}`,
-                canPrint: item.notas.length ? true : false
+                canPrint: canPrint.length
             });
         })
     );
@@ -172,3 +178,8 @@ const findBoletim = async (request) => {
     }).lean().exec();
 }
 
+const findNotaByBoletimId = async boletimId => {
+    return notasModel.find({
+        idBoletim: boletimId
+    }).lean().exec();
+}
