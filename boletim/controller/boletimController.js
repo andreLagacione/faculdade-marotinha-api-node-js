@@ -150,9 +150,6 @@ const boletimListDTO = async (professorList) => {
             const curso = await getById(`/curso/${turma.curso.id}`);
             const canPrint = await findNotaByBoletimId(item._id)
 
-            console.log('vaca ', canPrint)
-
-
             boletimDTO.push({
                 id: item._id,
                 ano: item.ano,
