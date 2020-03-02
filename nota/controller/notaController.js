@@ -28,15 +28,14 @@ module.exports = {
             return false;
         }
 
-        // CONTINUAR ESSE METODO
-
-
         const newProfessor = new model({
-            name: request.body.name.trim(),
-            age: request.body.age,
-            cpf: cpf,
-            phone: request.body.phone.trim(),
-            materias: request.body.materias
+            materia: idMateria,
+            idBoletim,
+            notaBimestre1,
+            notaBimestre2,
+            notaBimestre3,
+            notaBimestre4,
+            mediaFinal: mediaCalculate(notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4)
         });
 
         const save = await newProfessor.save();
@@ -44,7 +43,7 @@ module.exports = {
         response.json({
             httpStatus: 'OK',
             httpStatusCode: 200,
-            message: 'Professor(a) adicionado(a) com sucesso!'
+            message: 'Nota adicionado com sucesso!'
         });
     },
 };
@@ -60,7 +59,7 @@ const notasDTO = (notas) => {
             notaBimestre3,
             notaBimestre4,
             notaBimestre4,
-            mediaFinal
+            mediaFinal: mediaFinal || 'N/A'
         });
     });
 
@@ -74,4 +73,13 @@ const findNota = async (request) => {
         idMateria: ObjectId(idMateria),
         idBoletim: ObjectId(idBoletim)
     });
+}
+
+const mediaCalculate = (notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4) => {
+    if (notaBimestre1 && notaBimestre2 && notaBimestre3 && notaBimestre4) {
+        const media = (notaBimestre1 + notaBimestre2 + notaBimestre3 + notaBimestre4) / 4;
+        return media.toPrecision(2);
+    }
+
+    return 0;
 }
