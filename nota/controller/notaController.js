@@ -47,6 +47,29 @@ module.exports = {
             message: 'Nota adicionado com sucesso!'
         });
     },
+
+    async show(request, response) {
+        const _id = request.params.id;
+        const nota = await model.findById(_id).lean().exec();
+
+        if (nota) {
+            response.setHeader('Content-Type', 'application/json');
+            response.json({
+                idMateria: nota.materia,
+                notaBimestre1: nota.notaBimestre1,
+                notaBimestre2: nota.notaBimestre2,
+                notaBimestre3: nota.notaBimestre3,
+                notaBimestre4: nota.notaBimestre4
+            });
+            return false;
+        }
+
+        response.status(404).send({
+            httpStatus: 'Not Found',
+            httpStatusCode: 404,
+            message: 'Notas não encontradas!'
+        });
+    },
 };
 
 const notasDTO = async notas => {
