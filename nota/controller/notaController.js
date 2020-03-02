@@ -7,11 +7,13 @@ const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
 const { validateIfHasSubjects } = require('../../commons/validators');
+const { getById } = require('../../commons/getData');
 
 module.exports = {
     async index(request, response) {
-        const notas = await model.find({ idBoletim: ObjectId(request.param.id) });
-        response.json(notasDTO(notas));
+        console.log(request.params.id);
+        const notas = await model.find({ idBoletim: ObjectId(request.params.id) });
+        response.json(await notasDTO(notas));
     },
 
     async store(request, response) {
@@ -48,20 +50,24 @@ module.exports = {
     },
 };
 
-const notasDTO = (notas) => {
+const notasDTO = async notas => {
     let listDTO = [];
 
-    notas.map(item => {
-        listDTO.push({
-            nomeMateria: item.materia,
-            notaBimestre1,
-            notaBimestre2,
-            notaBimestre3,
-            notaBimestre4,
-            notaBimestre4,
-            mediaFinal: mediaFinal || 'N/A'
-        });
-    });
+    await Promise.all(
+        notas.map(async item => {
+            const materia = await getById(`/materia/${item.materia}`);
+
+            listDTO.push({
+                id: item._id,
+                nomeMateria: materia.name,
+                notaBimestre1: item.notaBimestre1,
+                notaBimestre2: item.notaBimestre2,
+                notaBimestre3: item.notaBimestre3,
+                notaBimestre4: item.notaBimestre4,
+                mediaFinal: item.mediaFinal || 'N/A'
+            });
+        })
+    );
 
     return listDTO;
 };
