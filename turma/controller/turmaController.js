@@ -5,6 +5,7 @@ const model = db.model('turmas', schema, 'turmas', true);
 const professorModel = db.model('professores');
 const cursoModel = db.model('cursos');
 const ObjectId = require('mongodb').ObjectID;
+const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
@@ -126,27 +127,7 @@ module.exports = {
     },
 
     async destroy(request, response) {
-        const _id = request.params.id;
-
-        const _response = await model.deleteOne({
-            '_id': new ObjectId(_id)
-        });
-
-        if (_response && _response.deletedCount === 0) {
-            response.status(404).send({
-                httpStatus: 'Not Found',
-                httpStatusCode: 404,
-                message: 'Turma não encontrada!'
-            });
-
-            return false;
-        }
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Turma removida com sucesso!'
-        });
+        return removeData(response, model, request.params.id, 'Turma não encontrada!', 'Turma removida com sucesso!');
     }
 }
 

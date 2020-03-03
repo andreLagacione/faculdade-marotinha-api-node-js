@@ -3,10 +3,10 @@ const schema = require('../schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('alunos', schema, 'alunos', true);
 const turmaModel = db.model('turmas');
-const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
 const { validateIfHasSubjects } = require('../../commons/validators');
+const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
@@ -134,27 +134,7 @@ module.exports = {
     },
 
     async destroy(request, response) {
-        const _id = request.params.id;
-
-        const _response = await model.deleteOne({
-            '_id': new ObjectId(_id)
-        });
-
-        if (_response && _response.deletedCount === 0) {
-            response.status(404).send({
-                httpStatus: 'Not Found',
-                httpStatusCode: 404,
-                message: 'Aluno(a) não encontrado(a)!'
-            });
-
-            return false;
-        }
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Aluno(a) removido(a) com sucesso!'
-        });
+        return removeData(response, model, request.params.id, 'Aluno(a) não encontrado(a)!', 'Aluno(a) removido(a) com sucesso!');
     }
 };
 

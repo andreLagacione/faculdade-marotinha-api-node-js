@@ -3,9 +3,9 @@ const schema = require('../schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('cursos', schema, 'cursos', true);
 const materiaModel = db.model('materias');
-const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { validateIfCourseExist, validateIfHasSubjects } = require('../../commons/validators');
+const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
@@ -116,27 +116,7 @@ module.exports = {
     },
 
     async destroy(request, response) {
-        const _id = request.params.id;
-
-        const _response = await model.deleteOne({
-            '_id': new ObjectId(_id)
-        });
-
-        if (_response && _response.deletedCount === 0) {
-            response.status(404).send({
-                httpStatus: 'Not Found',
-                httpStatusCode: 404,
-                message: 'Curso não encontrado(a)!'
-            });
-
-            return false;
-        }
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Curso removido com sucesso!'
-        });
+        return removeData(response, model, request.params.id, 'Curso não encontrado(a)!', 'Curso removido com sucesso!');
     }
 }
 

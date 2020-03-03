@@ -6,6 +6,7 @@ const model = db.model('boletim', schema, 'boletim', true);
 const notasModel = db.model('notas', notasSchema);
 const ObjectId = require('mongodb').ObjectID;
 const { getById } = require('../../commons/getData');
+const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
@@ -114,27 +115,7 @@ module.exports = {
     },
 
     async destroy(request, response) {
-        const _id = request.params.id;
-
-        const _response = await model.deleteOne({
-            '_id': new ObjectId(_id)
-        });
-
-        if (_response && _response.deletedCount === 0) {
-            response.status(404).send({
-                httpStatus: 'Not Found',
-                httpStatusCode: 404,
-                message: 'Boletim não encontrado!'
-            });
-
-            return false;
-        }
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Boletim removido com sucesso!'
-        });
+        return removeData(response, model, request.params.id, 'Boletim não encontrado!', 'Boletim removido com sucesso!');
     }
 
 };

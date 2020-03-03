@@ -2,8 +2,8 @@ const db = require('../../mongo-config');
 const schema = require('../schema');
 const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('materias', schema, 'materias', true);
-const ObjectId = require('mongodb').ObjectID;
 const { convertId } = require('../../commons/convert-id');
+const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
@@ -72,26 +72,6 @@ module.exports = {
     },
 
     async destroy(request, response) {
-        const _id = request.params.id;
-
-        const _response = await model.deleteOne({
-            '_id': new ObjectId(_id)
-        });
-
-        if (_response && _response.deletedCount === 0) {
-            response.status(404).send({
-                httpStatus: 'Not Found',
-                httpStatusCode: 404,
-                message: 'Matéria não encontrada!'
-            });
-
-            return false;
-        }
-
-        response.json({
-            httpStatus: 'OK',
-            httpStatusCode: 200,
-            message: 'Matéria removida com sucesso!'
-        });
+        return removeData(response, model, request.params.id, 'Matéria não encontrada!', 'Matéria removida com sucesso!');
     }
 }
