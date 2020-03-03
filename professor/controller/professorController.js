@@ -1,9 +1,8 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
-const { pagination, paginationParams } = require('../../commons/pagination');
+const { buildPagination } = require('../../commons/pagination');
 const model = db.model('professores', schema, 'professores', true);
 const materiaModel = db.model('materias');
-const ObjectId = require('mongodb').ObjectID;
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
 const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
 const { validateIfHasSubjects } = require('../../commons/validators');
@@ -11,9 +10,7 @@ const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        const _paginationParams = paginationParams(request);
-        const professorList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
-        let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, professorList)
+        let _pagination = await buildPagination(request, model);
         _pagination.content = professorListDTO(_pagination.content);
         response.json(_pagination);
     },

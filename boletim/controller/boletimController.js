@@ -1,7 +1,7 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
 const notasSchema = require('../../nota/schema');
-const { pagination, paginationParams } = require('../../commons/pagination');
+const { buildPagination } = require('../../commons/pagination');
 const model = db.model('boletim', schema, 'boletim', true);
 const notasModel = db.model('notas', notasSchema);
 const ObjectId = require('mongodb').ObjectID;
@@ -10,9 +10,7 @@ const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        const _paginationParams = paginationParams(request);
-        const boletimList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
-        let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, boletimList)
+        let _pagination = await buildPagination(request, model);
         _pagination.content = await boletimListDTO(_pagination.content);
         response.json(_pagination);
     },

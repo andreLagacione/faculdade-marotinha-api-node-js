@@ -1,15 +1,13 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
-const { pagination, paginationParams } = require('../../commons/pagination');
+const { buildPagination } = require('../../commons/pagination');
 const model = db.model('materias', schema, 'materias', true);
 const { convertId } = require('../../commons/convert-id');
 const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        const _paginationParams = paginationParams(request);
-        const materiaList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
-        let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, materiaList)
+        let _pagination = await buildPagination(request, model);
         _pagination.content = convertId(_pagination.content);
         response.json(_pagination);
     },

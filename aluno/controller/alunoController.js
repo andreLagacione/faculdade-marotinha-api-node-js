@@ -1,6 +1,6 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
-const { pagination, paginationParams } = require('../../commons/pagination');
+const { buildPagination } = require('../../commons/pagination');
 const model = db.model('alunos', schema, 'alunos', true);
 const turmaModel = db.model('turmas');
 const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
@@ -10,9 +10,7 @@ const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        const _paginationParams = paginationParams(request);
-        const alunoList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
-        let _pagination = pagination(_paginationParams.pageNumber, _paginationParams.pageSize, alunoList)
+        let _pagination = await buildPagination(request, model);
         _pagination.content = alunoListDTO(_pagination.content);
         response.json(_pagination);
     },
