@@ -1,12 +1,7 @@
 const db = require('../../mongo-config');
 const schema = require('../schema');
-const { pagination, paginationParams } = require('../../commons/pagination');
 const model = db.model('notas', schema, 'notas', true);
-const materiaModel = db.model('materias');
 const ObjectId = require('mongodb').ObjectID;
-const { convertId, structureArrayOfObjectId } = require('../../commons/convert-id');
-const { checkCpf, findRegisterByCpf } = require('../../commons/cpf');
-const { validateIfHasSubjects } = require('../../commons/validators');
 const { getById } = require('../../commons/getData');
 
 module.exports = {
