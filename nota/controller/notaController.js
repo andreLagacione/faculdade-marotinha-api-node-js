@@ -70,6 +70,54 @@ module.exports = {
             message: 'Notas não encontradas!'
         });
     },
+
+    async update(request, response) {
+        const {
+            id, idMateria, notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4, idBoletim
+        } = request.body;
+
+        const canEdit = await findNota(request);
+
+        if (canEdit.length && canEdit[0]._id != id) {
+            response.status(405).send({
+                httpStatus: 'Method Not Allowed',
+                httpStatusCode: 405,
+                message: 'Já existe(m) nota(s) cadastrada(s) para essa matéria neste boletim!'
+            });
+
+            return false;
+        }
+
+        const _response = await model.updateOne({
+            _id: id
+        }, {
+            $set: {
+                materia: idMateria,
+                idBoletim,
+                notaBimestre1,
+                notaBimestre2,
+                notaBimestre3,
+                notaBimestre4,
+                mediaFinal: mediaCalculate(notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4)
+            }
+        });
+
+        if (_response && _response.n === 0) {
+            response.status(404).send({
+                httpStatus: 'Not Found',
+                httpStatusCode: 404,
+                message: 'Nota não encontrada!'
+            });
+
+            return false;
+        }
+
+        response.json({
+            httpStatus: 'OK',
+            httpStatusCode: 200,
+            message: 'Nota alterada com sucesso!'
+        });
+    },
 };
 
 const notasDTO = async notas => {
