@@ -1,4 +1,11 @@
-exports.pagination = (pageNumber = 0, pageSize = 25, elements) => {
+exports.buildPagination = async (request, model) => {
+    const _paginationParams = paginationParams(request);
+    const dataList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
+    return pagination(_paginationParams.pageNumber, _paginationParams.pageSize, dataList)
+}
+
+
+const pagination = (pageNumber = 0, pageSize = 25, elements) => {
     const totalElements = elements.length;
     const totalPages = Math.ceil(totalElements / pageSize);
     const isFirstPage = pageNumber === 0 ? true : false;
@@ -29,7 +36,7 @@ exports.pagination = (pageNumber = 0, pageSize = 25, elements) => {
     }
 }
 
-exports.paginationParams = (request, orderBy = 'name', direction = 1) => {
+const paginationParams = (request, orderBy = 'name', direction = 1) => {
     const pageNumber = request.query.page;
     const pageSize = request.query.size;
     let order = null;
