@@ -28,9 +28,9 @@ const options = {
     format: 'Letter',
     orientation: 'landscape',
     border: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px'
+        top: '10px',
+        right: '10px',
+        bottom: '10px',
+        left: '10px'
     },
 }
