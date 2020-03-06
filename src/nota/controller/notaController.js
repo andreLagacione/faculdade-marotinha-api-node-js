@@ -28,10 +28,10 @@ module.exports = {
         const newProfessor = new model({
             materia: idMateria,
             idBoletim,
-            notaBimestre1,
-            notaBimestre2,
-            notaBimestre3,
-            notaBimestre4,
+            notaBimestre1: notaBimestre1.toPrecision(2),
+            notaBimestre2: notaBimestre2.toPrecision(2),
+            notaBimestre3: notaBimestre3.toPrecision(2),
+            notaBimestre4: notaBimestre4.toPrecision(2),
             mediaFinal: mediaCalculate(notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4)
         });
 
@@ -90,10 +90,10 @@ module.exports = {
             $set: {
                 materia: idMateria,
                 idBoletim,
-                notaBimestre1,
-                notaBimestre2,
-                notaBimestre3,
-                notaBimestre4,
+                notaBimestre1: notaBimestre1.toPrecision(2),
+                notaBimestre2: notaBimestre2.toPrecision(2),
+                notaBimestre3: notaBimestre3.toPrecision(2),
+                notaBimestre4: notaBimestre4.toPrecision(2),
                 mediaFinal: mediaCalculate(notaBimestre1, notaBimestre2, notaBimestre3, notaBimestre4)
             }
         });
