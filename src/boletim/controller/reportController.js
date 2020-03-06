@@ -4,27 +4,18 @@ const template = require('../build-report/buildReport');
 const db = require('../../mongo-config');
 const ObjectId = require('mongodb').ObjectID;
 const { getById } = require('../../commons/getData');
-
 const notasSchema = require('../../nota/schema');
-const boletimSchema = require('../../boletim/schema');
-const professorSchema = require('../../professor/schema');
-const alunoSchema = require('../../aluno/schema');
-const turmaSchema = require('../../turma/schema');
 const notasModel = db.model('notas', notasSchema);
-const boletimModel = db.model('boletim', boletimSchema);
-const professorModel = db.model('professor', professorSchema);
-const alunoModel = db.model('aluno', alunoSchema);
-const turmaModel = db.model('turma', turmaSchema);
 
 module.exports = {
     async generate(request, response) {
 
         const boletimId = request.params.id;
-        const boletim = await boletimModel.findById(boletimId);
         const notas = await notasModel.find({ idBoletim: ObjectId(boletimId) }).lean().exec();
-        const professor = await professorModel.findById(boletim.professor);
-        const aluno = await alunoModel.findById(boletim.aluno);
-        const turma = await turmaModel.findById(boletim.turma);
+        const boletim = await getById(`/boletim/${boletimId}`);
+        const professor = await getById(`/professor/${boletim.idProfessor}`);
+        const aluno = await getById(`/aluno/${boletim.idAluno}`);
+        const turma = await getById(`/turma/${boletim.idTurma}`);
 
         const boletimData = {
             ano: boletim.ano,
