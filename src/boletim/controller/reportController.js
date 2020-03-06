@@ -59,7 +59,7 @@ module.exports = {
     
             response.setHeader('Content-Length', stat.size);
             response.setHeader('Content-Type', 'application/pdf');
-            response.setHeader(`Content-Disposition', 'attachment; filename=${fileName}`);
+            response.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
             file.pipe(response);    
         }, 300);
     }
