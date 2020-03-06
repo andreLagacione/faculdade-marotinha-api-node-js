@@ -1,5 +1,5 @@
 module.exports = {
-    build(Report) {
+    build(boletimData) {
         return `
         <!doctype html>
             <html>
@@ -9,15 +9,15 @@ module.exports = {
                     </style>
                 </head>
                 <body>
-                    <h1 class="details">Boletim Escolar: 2020</h1>
+                    <h1 class="details">Boletim Escolar: ${boletimData.ano}</h1>
 
                     <div class="details">
-                        <div class="item font-small">Professor(a): André</div>
-                        <div class="item font-small">Aluno(a): Sofia</div>
+                        <div class="item font-small"><b>Professor(a):</b> ${boletimData.professor}</div>
+                        <div class="item font-small"><b>Aluno(a):</b> ${boletimData.aluno}</div>
                     </div>
 
                     <div class="details font-small">
-                        Turma: Ciência da Computação = período da noite
+                        <b>Turma:</b> ${boletimData.turma}
                     </div>
 
                     <div class="list-materies">
@@ -30,20 +30,13 @@ module.exports = {
                             <div class="value">Média Final</div>
                         </div>
 
-                        <div class="row-matery">
-                            <div class="name">Sistemas Operacionais</div>
-                            <div class="value">9</div>
-                            <div class="value">9</div>
-                            <div class="value">9</div>
-                            <div class="value">9</div>
-                            <div class="value">9</div>
-                        </div>
+                        ${buildRowMatery(boletimData.notas)}
                     </div>
                 </body>
             </html>
         `;
     }
-}
+};
 
 const styles = `
 * {
@@ -104,4 +97,23 @@ body {
 .row-matery .value {
     width: 10%;
 }
-`
+`;
+
+const buildRowMatery = notas => {
+    let row = '';
+
+    notas.map(item => {
+        row += `
+            <div class="row-matery">
+                <div class="name">${item.materia}</div>
+                <div class="value">${item.notaBimestre1}</div>
+                <div class="value">${item.notaBimestre2}</div>
+                <div class="value">${item.notaBimestre3}</div>
+                <div class="value">${item.notaBimestre4}</div>
+                <div class="value">${item.mediaFinal}</div>
+            </div>
+        `
+    });
+
+    return row;
+};
