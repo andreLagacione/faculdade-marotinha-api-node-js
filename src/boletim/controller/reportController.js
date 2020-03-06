@@ -10,15 +10,11 @@ const boletimSchema = require('../../boletim/schema');
 const professorSchema = require('../../professor/schema');
 const alunoSchema = require('../../aluno/schema');
 const turmaSchema = require('../../turma/schema');
-const materiaSchema = require('../../materia/schema');
 const notasModel = db.model('notas', notasSchema);
 const boletimModel = db.model('boletim', boletimSchema);
 const professorModel = db.model('professor', professorSchema);
 const alunoModel = db.model('aluno', alunoSchema);
 const turmaModel = db.model('turma', turmaSchema);
-const materiaModel = db.model('materia', materiaSchema);
-
-
 
 module.exports = {
     async generate(request, response) {
