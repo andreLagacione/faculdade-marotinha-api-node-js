@@ -16,12 +16,13 @@ module.exports = {
         const professor = await getById(`/professor/${boletim.idProfessor}`);
         const aluno = await getById(`/aluno/${boletim.idAluno}`);
         const turma = await getById(`/turma/${boletim.idTurma}`);
+        const curso = await getById(`/curso/${turma.curso.id}`);
 
         const boletimData = {
             ano: boletim.ano,
             professor: professor.name,
             aluno: aluno.name,
-            turma: `${turma.cursoName} - período da ${turma.periodo}`,
+            turma: `${curso.name} - período da ${turma.periodo}`,
             notas: await buildNotas(notas)
         };
 
@@ -47,7 +48,9 @@ module.exports = {
             response.setHeader('Content-Length', stat.size);
             response.setHeader('Content-Type', 'application/pdf');
             response.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
-            file.pipe(response);    
+            file.pipe(response);
+
+            removeFile(pdfPath);
         }, 300);
     }
 }
@@ -71,6 +74,14 @@ const buildNotas = async (notasList) => {
     );
 
     return notasDTO;
+}
+
+const removeFile = filePath => {
+    fs.unlink(filePath, (error) => {
+        if (error) {
+            throw error;
+        }
+    })
 }
 
 const options = {
