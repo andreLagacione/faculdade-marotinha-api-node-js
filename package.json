@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "mocha ./src/**/*.spec.js"
+    "test": "nyc --reporter=html mocha ./src/**/*.spec.js"
   },
   "nyc": {
     "function": 80,
