@@ -1,12 +1,30 @@
-let chai = require('chai');
-let sinon = require('sinon');
-let sinonChai = require('sinon-chai');
-chai.use(sinonChai);
+const expect = require('chai').expect;
+const { setSchema, initDb, getTest, addTest, deleteTest } = require('../../mongo-config/test-config');
 
-global['fetch'] = require('node-fetch');
+describe('Teste Aluno ComboList', () => {
+    const schema = {
+        name: String,
+        age: Number,
+        cpf: String,
+        phone: String,
+        turmas: Array
+    };
 
-describe('Aluno Teste', () => {
-    it('Should return true', (done) => {
-        setImmediate(done);
-    })
+    beforeEach(() => {
+        setSchema(schema);
+        initDb({
+            name: 'André',
+            age: 30,
+            cpf: '123456789',
+            phone: '123456789',
+            turmas: []
+        });
+    });
+
+    it('Should find all ALunos', () => {
+        return getTest()
+            .then(item => {
+                expect(item.length).to.equal(1);
+            });
+    });
 });
