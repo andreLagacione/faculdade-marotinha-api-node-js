@@ -1,18 +1,11 @@
 const expect = require('chai').expect;
-const { setSchema, initDb, dropBd, getTest, addTest, deleteTest } = require('../../mongo-config/test-config');
+const db = require('../../mongo-config/test-config');
+const schema = require('../schema');
+const model = db.model('turmas', schema, 'turmas', true);
 
 describe('Teste Aluno ComboList', () => {
-    const schema = {
-        name: String,
-        age: Number,
-        cpf: String,
-        phone: String,
-        turmas: Array
-    };
-
     beforeEach(() => {
-        setSchema(schema);
-        initDb({
+        model.create({
             name: 'André',
             age: 30,
             cpf: '123456789',
@@ -22,14 +15,17 @@ describe('Teste Aluno ComboList', () => {
     });
 
     afterEach(() => {
-        dropBd();
+        model.collection.drop();
     });
 
-    it('Should find all Alunos', () => {
-        return getTest()
-            .then(item => {
-                expect(item.length).to.equal(1);
-                expect(item[0].name).to.equal('André');
-            });
+    it('Should find all Alunos', async () => {
+        const item = await model.find();
+
+        expect(item.length).to.equal(1);
+        expect(item[0].name).to.equal('André');
+        expect(item[0].age).to.equal(30);
+        expect(item[0].cpf).to.equal('123456789');
+        expect(item[0].phone).to.equal('123456789');
+        expect(item[0].turmas.length).to.equal(0);
     });
 });
