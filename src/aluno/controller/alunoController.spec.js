@@ -4,6 +4,13 @@ const schema = require('../schema');
 const model = db.model('turmas', schema, 'turmas', true);
 const ObjectId = require('mongodb').ObjectId;
 let newAlunoId;
+const userDefault = {
+    name: 'André',
+    age: 30,
+    cpf: '123456789',
+    phone: '123456789',
+    turmas: []
+};
 
 describe('Teste Aluno Controller', () => {
     before(async () => {
@@ -55,23 +62,18 @@ describe('Teste Aluno Controller', () => {
     });
 
     it('Should update an Aluno', async () => {
+        userDefault.name = 'Andre edited';
         const response = await model.updateOne({
             _id: newAlunoId
         }, {
-            $set: {
-                name: 'André edited',
-                age: 30,
-                cpf: '123456789',
-                phone: '123456789',
-                turmas: []
-            }
+            $set: userDefault
         });
 
         expect(response.n).to.equal(1);
         expect(response.nModified).to.equal(1);
         expect(response.ok).to.equal(1);
     });
-    
+
     it('Should remove an Aluno', async () => {
         const response = await model.deleteOne({
             '_id': new ObjectId(newAlunoId)
@@ -81,16 +83,33 @@ describe('Teste Aluno Controller', () => {
         expect(response.deletedCount).to.equal(1);
         expect(response.ok).to.equal(1);
     });
+
+    it('Should build AlunoDTO', async () => {
+        let listDTO = [];
+
+        await Promise.all(
+            [userDefault].map(item => {
+                listDTO.push({
+                    name: item.name,
+                    age: item.age,
+                    cpf: item.cpf,
+                    phone: item.phone,
+                    id: item._id || '123456789'
+                });
+            })
+        );
+
+        expect(listDTO.length).to.equal(1);
+        expect(listDTO[0].name).to.equal('Andre edited');
+        expect(listDTO[0].age).to.equal(30);
+        expect(listDTO[0].cpf).to.equal('123456789');
+        expect(listDTO[0].phone).to.equal('123456789');
+        expect(listDTO[0].turmas.length).to.equal(0);
+    });
 });
 
 const insertAluno = async () => {
-    return await model.create({
-        name: 'André',
-        age: 30,
-        cpf: '123456789',
-        phone: '123456789',
-        turmas: []
-    });
+    return await model.create(userDefault);
 };
 
 const findAluno = async () => {
