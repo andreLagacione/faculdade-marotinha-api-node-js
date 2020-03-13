@@ -53,6 +53,24 @@ describe('Teste Aluno Controller', () => {
         expect(item.turmas.length).to.equal(0);
     });
 
+    it('Should update an Aluno', async () => {
+        const response = await model.updateOne({
+            _id: newAlunoId
+        }, {
+            $set: {
+                name: 'André',
+                age: 30,
+                cpf: '123456789',
+                phone: '123456789',
+                turmas: []
+            }
+        });
+
+        expect(response.n).to.equal(1);
+        expect(response.nModified).to.equal(0);
+        expect(response.ok).to.equal(1);
+    });
+
 
 });
 
