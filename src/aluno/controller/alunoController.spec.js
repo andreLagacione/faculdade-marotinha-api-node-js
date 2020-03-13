@@ -2,13 +2,14 @@ const expect = require('chai').expect;
 const db = require('../../mongo-config/test-config');
 const schema = require('../schema');
 const model = db.model('turmas', schema, 'turmas', true);
+let newAlunoId;
 
 describe('Teste Aluno Controller', () => {
-    beforeEach(async () => {
+    before(async () => {
         await insertAluno();
     });
 
-    afterEach(() => {
+    after(() => {
         model.collection.drop();
     });
 
@@ -26,6 +27,7 @@ describe('Teste Aluno Controller', () => {
     it('Should add new Aluno', async () => {
         const newAluno = await insertAluno();
         const item = await findAluno();
+        newAlunoId = newAluno._id;
 
         expect(newAluno.name).to.equal('André');
         expect(newAluno.age).to.equal(30);
@@ -40,6 +42,18 @@ describe('Teste Aluno Controller', () => {
         expect(item[1].phone).to.equal('123456789');
         expect(item[1].turmas.length).to.equal(0);
     });
+
+    it('Should find an Aluno by id', async () => {
+        const item = await findAlunoById();
+
+        expect(item.name).to.equal('André');
+        expect(item.age).to.equal(30);
+        expect(item.cpf).to.equal('123456789');
+        expect(item.phone).to.equal('123456789');
+        expect(item.turmas.length).to.equal(0);
+    });
+
+
 });
 
 const insertAluno = async () => {
@@ -54,4 +68,8 @@ const insertAluno = async () => {
 
 const findAluno = async () => {
     return await model.find();
+};
+
+const findAlunoById = async () => {
+    return await model.findById(newAlunoId).lean().exec();
 };
