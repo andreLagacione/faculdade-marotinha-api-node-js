@@ -2,6 +2,7 @@ const expect = require('chai').expect;
 const db = require('../../mongo-config/test-config');
 const schema = require('../schema');
 const model = db.model('turmas', schema, 'turmas', true);
+const ObjectId = require('mongodb').ObjectId;
 let newAlunoId;
 
 describe('Teste Aluno Controller', () => {
@@ -58,7 +59,7 @@ describe('Teste Aluno Controller', () => {
             _id: newAlunoId
         }, {
             $set: {
-                name: 'André',
+                name: 'André edited',
                 age: 30,
                 cpf: '123456789',
                 phone: '123456789',
@@ -67,11 +68,19 @@ describe('Teste Aluno Controller', () => {
         });
 
         expect(response.n).to.equal(1);
-        expect(response.nModified).to.equal(0);
+        expect(response.nModified).to.equal(1);
         expect(response.ok).to.equal(1);
     });
+    
+    it('Should remove an Aluno', async () => {
+        const response = await model.deleteOne({
+            '_id': new ObjectId(newAlunoId)
+        });
 
-
+        expect(response.n).to.equal(1);
+        expect(response.deletedCount).to.equal(1);
+        expect(response.ok).to.equal(1);
+    });
 });
 
 const insertAluno = async () => {
