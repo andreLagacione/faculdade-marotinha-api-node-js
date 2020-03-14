@@ -83,29 +83,6 @@ describe('Teste Aluno Controller', () => {
         expect(response.deletedCount).to.equal(1);
         expect(response.ok).to.equal(1);
     });
-
-    it('Should build AlunoDTO', async () => {
-        let listDTO = [];
-
-        await Promise.all(
-            [userDefault].map(item => {
-                listDTO.push({
-                    name: item.name,
-                    age: item.age,
-                    cpf: item.cpf,
-                    phone: item.phone,
-                    id: item._id || '123456789'
-                });
-            })
-        );
-
-        expect(listDTO.length).to.equal(1);
-        expect(listDTO[0].name).to.equal('Andre edited');
-        expect(listDTO[0].age).to.equal(30);
-        expect(listDTO[0].cpf).to.equal('123456789');
-        expect(listDTO[0].phone).to.equal('123456789');
-        expect(listDTO[0].turmas.length).to.equal(0);
-    });
 });
 
 const insertAluno = async () => {
