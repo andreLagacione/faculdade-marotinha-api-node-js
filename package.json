@@ -3,14 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "scripts": {
-    "test": "nyc --reporter=html mocha ./src/**/*.spec.js"
-  },
-  "nyc": {
-    "function": 80,
-    "lines": 80,
-    "code-coverage": true
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andreLagacione/faculdade-marotinha-api-node-js.git"
@@ -28,15 +21,6 @@
     "fs-extra": "^8.1.0",
     "html-pdf": "^2.2.0",
     "mongodb": "3.5.0",
-    "mongoose": "5.8.9",
-    "node-fetch": "^2.6.0",
-    "sinon": "^9.0.0"
-  },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^7.1.0",
-    "mongo-unit": "^2.0.0",
-    "nyc": "^15.0.0",
-    "sinon-chai": "^3.5.0"
+    "mongoose": "5.8.9"
   }
 }
