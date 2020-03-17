@@ -10,7 +10,8 @@ const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        let _pagination = await buildPagination(request, model);
+        const filter = buildFilter(request.body);
+        let _pagination = await buildPagination(request, model, filter);
         _pagination.content = await boletimListDTO(_pagination.content);
         response.json(_pagination);
     },
@@ -158,4 +159,28 @@ const findNotaByBoletimId = async boletimId => {
     return notasModel.find({
         idBoletim: boletimId
     }).lean().exec();
+}
+
+const buildFilter = body => {
+    const filter = {};
+
+    if (body) {
+        if (body.ano) {
+            filter.ano = body.ano;
+        }
+
+        if (body.idProfessor) {
+            filter.professor = body.idProfessor;
+        }
+
+        if (body.idAluno) {
+            filter.aluno = body.idAluno;
+        }
+
+        if (body.idTurma) {
+            filter.turma = body.idTurma;
+        }
+    }
+
+    return filter;
 }
