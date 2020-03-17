@@ -1,6 +1,6 @@
-exports.buildPagination = async (request, model) => {
+exports.buildPagination = async (request, model, filter = {}) => {
     const _paginationParams = paginationParams(request);
-    const dataList = await model.find({}).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
+    const dataList = await model.find(filter).sort([[_paginationParams.orderBy, _paginationParams.direction]]).lean().exec();
     return pagination(_paginationParams.pageNumber, _paginationParams.pageSize, dataList)
 }
 
