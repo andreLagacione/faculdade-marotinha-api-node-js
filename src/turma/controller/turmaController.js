@@ -9,7 +9,8 @@ const { removeData } = require('../../commons/removeData');
 
 module.exports = {
     async index(request, response) {
-        let _pagination = await buildPagination(request, model);
+        const filter = buildFilter(request.body);
+        let _pagination = await buildPagination(request, model, filter);
         _pagination.content = await turmaListDTO(_pagination.content);
         response.json(_pagination);
     },
@@ -168,4 +169,28 @@ const turmaValidate = async (bodyRequest) => {
     }
 
     return false;
+}
+
+const buildFilter = body => {
+    const filter = {};
+
+    if (body) {
+        if (body.ano) {
+            filter.ano = body.ano;
+        }
+
+        if (body.idCurso) {
+            filter.curso = body.idCurso;
+        }
+
+        if (body.idProfessor) {
+            filter.professor = body.idProfessor;
+        }
+
+        if (body.periodo) {
+            filter.periodo = body.periodo;
+        }
+    }
+
+    return filter;
 }
